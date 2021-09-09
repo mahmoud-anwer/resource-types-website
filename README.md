@@ -41,4 +41,4 @@ There are multiple ways to run the code locally:
   ginkgo -r -keepGoing .
   ```
 
-- To test the front-end code: `cd warehouse && yarn install && yarn test`.
+- To test the front-end code: `cd warehouse && yarn install && yarn test`
