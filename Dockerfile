@@ -21,6 +21,8 @@ RUN go get -d ./...
 RUN go build -o dutyfree ./main.go
 
 FROM ubuntu:bionic AS dutyfree
+ARG TOKEN
+ENV GH_TOKEN $TOKEN
 EXPOSE 9090
 COPY --from=builder src/warehouse/dutyfree /usr/local/bin/
 RUN apt-get update \
