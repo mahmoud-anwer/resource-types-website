@@ -18,15 +18,6 @@ jobs:
         with:
           submodules: true
           
-      - name: Test the back-end
-        working-directory: ./warehouse
-        run: |
-          sudo apt-get install golang-ginkgo-dev -y
-          ginkgo -r -keepGoing .
-          
-      - name: Test the front-end
-        working-directory: ./warehouse
-        run: yarn install && yarn test
       
       - uses: borales/actions-yarn@v2.3.0
       - name: Setup dependencies
@@ -40,7 +31,15 @@ jobs:
         working-directory: ./warehouse
         run: go build ./main.go
       
-        
+      - name: Test the back-end
+        working-directory: ./warehouse
+        run: |
+          sudo apt-get install golang-ginkgo-dev -y
+          ginkgo -r -keepGoing .
+          
+      - name: Test the front-end
+        working-directory: ./warehouse
+        run: yarn install && yarn test
       
         
       - name: Heroku login credentials
