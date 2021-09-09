@@ -3,9 +3,7 @@ name: Pipeline to build, test and deploy
 on:
   push:
     branches:
-      - master
-    paths:
-      - 'warehouse/resource-types/**'  
+      - master  
       
     
 env:
