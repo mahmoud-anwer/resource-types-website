@@ -18,7 +18,7 @@ import (
 var _ = Describe("Warehouse main", func() {
 	Context("Resources Endpoint", func() {
 		It("returns JSON on API call", func() {
-			token := os.Getenv("TOKEN")
+			token := os.Getenv("GH_TOKEN")
 			DutyfreeServerCommand.Env = []string{"GH_TOKEN=" + token}
 
 			var err error
