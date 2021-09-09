@@ -1,0 +1,66 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - master
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+  HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+  
+jobs:
+  Build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: borales/actions-yarn@v2.3.0
+      - name: Setup dependencies
+        working-directory: ./warehouse/web
+        run: yarn install && yarn build
+      - uses: actions/setup-go@v2
+        with:
+          stable: 'false'
+          go-version: '1.17'
+      - name: Build
+        working-directory: ./warehouse
+        run: go build ./main.go
+      - name: Test the back-end
+        working-directory: ./warehouse
+        run: |
+          sudo apt-get install golang-ginkgo-dev -y
+          ginkgo -r -keepGoing .
+      - name: Test the front-end
+        working-directory: ./warehouse
+        run: yarn install && yarn test
+        
+      
+        
+      - name: Heroku login credentials
+        run: |
+          cat > ~/.netrc <<EOF
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+            machine git.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+          EOF
+          
+      - name: Log in to Container Registry
+        run: heroku container:login
+      
+      - name: Add Heroku remote
+        run: heroku git:remote -a $HEROKU_APP_NAME
+        
+      - name: Build the image and push to Container Registry
+        run: heroku container:push web --arg TOKEN=$GH_TOKEN
+      
+      - name: Release the image to your app
+        run: heroku container:release web
+    
+   
+      
