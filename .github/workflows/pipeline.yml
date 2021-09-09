@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'warehouse/resource-types/**'  
+      
+    
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
